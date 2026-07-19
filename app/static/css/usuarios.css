@@ -1,0 +1,16 @@
+th,td{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.errorlist {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    color: #ffb4b4;
+    font-size: 0.88rem;
+    text-align: left;
+}
+
+.alert {
+    border-radius: 8px;
+}

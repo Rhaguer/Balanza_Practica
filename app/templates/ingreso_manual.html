@@ -1,0 +1,126 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}Ingreso manual por olvido{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/ingreso_manual.css' %}">
+
+<main class="container py-4 manual-entry-page">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} mb-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <section class="card shadow-sm manual-entry-card">
+        <div class="card-header manual-entry-header text-white">
+            <h3 class="mb-0">Ingreso manual</h3>
+            <p class="mb-0 mt-1">Complete el tipo y la medición que corresponda al residuo.</p>
+        </div>
+        <div class="card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.fecha.id_for_label }}">{{ form.fecha.label }}</label>
+                        {{ form.fecha }}
+                        {{ form.fecha.errors }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.taller.id_for_label }}">{{ form.taller.label }}</label>
+                        {{ form.taller }}
+                        {{ form.taller.errors }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.categoria.id_for_label }}">{{ form.categoria.label }}</label>
+                        {{ form.categoria }}
+                        {{ form.categoria.errors }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.tipo_medicion.id_for_label }}">{{ form.tipo_medicion.label }}</label>
+                        {{ form.tipo_medicion }}
+                        {{ form.tipo_medicion.errors }}
+                        <div id="medicion-ayuda" class="form-text">Seleccione primero el tipo de residuo.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" id="cantidad-label" for="{{ form.cantidad.id_for_label }}">{{ form.cantidad.label }}</label>
+                        <div class="input-group">
+                            {{ form.cantidad }}
+                            <span class="input-group-text" id="unidad-medicion">—</span>
+                        </div>
+                        {{ form.cantidad.errors }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="{{ form.motivo.id_for_label }}">{{ form.motivo.label }}</label>
+                        {{ form.motivo }}
+                        {{ form.motivo.errors }}
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary manual-submit">Registrar ingreso</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const categoria = document.getElementById("id_categoria");
+    const medicion = document.getElementById("id_tipo_medicion");
+    const cantidad = document.getElementById("id_cantidad");
+    const cantidadLabel = document.getElementById("cantidad-label");
+    const unidad = document.getElementById("unidad-medicion");
+    const ayuda = document.getElementById("medicion-ayuda");
+    function actualizarMedicion() {
+        const tipo = categoria.selectedOptions[0]?.dataset.tipoOperacional || "";
+        if (!tipo) {
+            medicion.value = "";
+            medicion.disabled = true;
+            cantidadLabel.textContent = "Valor de la medición";
+            unidad.textContent = "—";
+            ayuda.textContent = "Seleccione primero el tipo de residuo.";
+            return;
+        }
+
+        medicion.disabled = false;
+        if (tipo === "inorganico") {
+            medicion.value = "unidades";
+            cantidad.step = "1";
+            cantidadLabel.textContent = "Cantidad de unidades";
+            unidad.textContent = "unidades";
+            ayuda.textContent = "Los residuos inorgánicos se registran con números enteros.";
+        } else {
+            medicion.value = "peso_kg";
+            cantidad.step = "0.001";
+            cantidadLabel.textContent = "Peso registrado";
+            unidad.textContent = "kg";
+            ayuda.textContent = "Los residuos orgánicos se registran por peso.";
+        }
+    }
+
+    categoria.addEventListener("change", function () {
+        actualizarMedicion();
+    });
+    medicion.addEventListener("change", function () {
+        const esUnidades = medicion.value === "unidades";
+        cantidad.step = esUnidades ? "1" : "0.001";
+        unidad.textContent = esUnidades ? "unidades" : "kg";
+    });
+
+    actualizarMedicion();
+});
+</script>
+{% endblock %}

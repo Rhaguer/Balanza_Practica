@@ -1,0 +1,87 @@
+{% extends "./base.html" %}
+
+{% block title %} Gestión de Usuarios {% endblock %}
+{% load static %}
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/usuarios.css' %}">
+<link rel="stylesheet" href="{% static 'css/password_toggle.css' %}?v=4">
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4 ">
+            <h3 class="page-title-banner">Editar Usuarios</h3>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            <div class="card mt-4 mb-4 shadow">
+                <div class="card-body">
+                    <form method="post" class="p-4 border rounded bg-dark" id="form-usuario">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            {{ form.non_field_errors }}
+                            <div class="mb-2">
+                                <label for="id_nombre" class="text-white">Nombre</label>
+                                {{ form.nombre }}
+                                {{ form.nombre.errors }}
+                            </div>
+                            <div class="mb-2">
+                                <label for="id_apellido" class="text-white">Apellido</label>
+                                {{ form.apellido }}
+                                {{ form.apellido.errors }}
+                            </div>
+                            <div class="mb-2">
+                                <label for="id_email" class="text-white">Email</label>
+                                {{ form.email }}
+                                {{ form.email.errors }}
+                            </div>
+                            <div class="mb-2">
+                                <label for="id_password1" class="text-white">Nueva contraseña</label>
+                                <div class="password-input-wrapper">
+                                    {{ form.password1 }}
+                                    <button type="button" class="password-toggle" data-password-toggle="id_password1" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">
+                                        <svg class="password-toggle-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                                            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                                            <circle cx="12" cy="12" r="2.75" />
+                                            <path class="password-toggle-slash" d="M4 4l16 16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <small class="text-white-50 d-block">{{ form.password1.help_text }}</small>
+                                {{ form.password1.errors }}
+                            </div>
+                            <div class="mb-2">
+                                <label for="id_password2" class="text-white">Confirmar nueva contraseña</label>
+                                <div class="password-input-wrapper">
+                                    {{ form.password2 }}
+                                    <button type="button" class="password-toggle" data-password-toggle="id_password2" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">
+                                        <svg class="password-toggle-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                                            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                                            <circle cx="12" cy="12" r="2.75" />
+                                            <path class="password-toggle-slash" d="M4 4l16 16" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <small class="text-white-50 d-block">{{ form.password2.help_text }}</small>
+                                {{ form.password2.errors }}
+                            </div>
+                            <div class="mb-2">
+                                <label for="id_grupo" class="text-white">Rol</label>
+                                {{ form.grupo }}
+                                {{ form.grupo.errors }}
+                            </div><br>
+                            <button type="submit" class="btn btn-primary w-100">Editar Usuario</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script src="{% static 'js/password_toggle.js' %}?v=2"></script>
+{% endblock %}

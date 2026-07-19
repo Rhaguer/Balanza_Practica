@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingreso | Sistema de Gestión de Residuos</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'css/password_toggle.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'css/app_popups.css' %}">
+    <link rel="stylesheet" href="{% static 'css/institutional_theme.css' %}?v=10">
+    <link rel="stylesheet" href="{% static 'css/accessibility.css' %}?v=6">
+    <script src="{% static 'js/accessibility-init.js' %}?v=1"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Saltar al contenido principal</a>
+    {% include "includes/accessibility_widget.html" %}
+    <main class="login-shell" id="main-content" tabindex="-1">
+        <section class="login-panel">
+            <div class="brand-block">
+                <img src="{% static 'fotos/logo-footer.png' %}" alt="INACAP">
+                <span>Gestión de Residuos</span>
+            </div>
+
+            <h1>Ingreso seguro</h1>
+            <p class="lead">Accede con tu correo institucional o nombre de usuario para gestionar residuos, talleres, retiros y reportes.</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }}" role="status">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+
+                <label for="username">Correo o usuario</label>
+                <input id="username" type="text" name="username" autocomplete="username" placeholder="usuario@inacap.cl" required>
+
+                <label for="password">Contraseña</label>
+                <div class="password-input-wrapper">
+                    <input id="password" type="password" name="password" autocomplete="current-password" placeholder="Ingrese su contraseña" required>
+                    <button type="button" class="password-toggle" data-password-toggle="password" aria-label="Mostrar contraseña" aria-pressed="false" title="Mostrar contraseña">
+                        <svg class="password-toggle-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                            <circle cx="12" cy="12" r="2.75" />
+                            <path class="password-toggle-slash" d="M4 4l16 16" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="submit">Ingresar al sistema</button>
+            </form>
+
+            <p class="security-note">Las contraseñas se validan con hash seguro de Django y no se almacenan en texto visible.</p>
+        </section>
+    </main>
+    <script src="{% static 'js/app_popups.js' %}"></script>
+    <script src="{% static 'js/password_toggle.js' %}?v=2"></script>
+    <script src="{% static 'js/accessibility.js' %}?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+.manual-entry-page {
+    --manual-blue: #0d6efd;
+    --manual-sky: #0ea5e9;
+    --manual-soft: #eaf7ff;
+}
+
+.manual-entry-card {
+    overflow: hidden;
+    border: 1px solid #b8dcf5;
+    border-radius: 14px;
+    box-shadow: 0 14px 34px rgba(14, 116, 179, 0.14) !important;
+}
+
+.manual-entry-header {
+    padding: 1.1rem 1.25rem;
+    border: 0;
+    background: linear-gradient(120deg, #0ea5e9, #2563eb);
+}
+
+.manual-entry-header p {
+    color: #eaf7ff;
+    font-size: 0.95rem;
+}
+
+.manual-entry-card .card-body {
+    padding: 1.35rem;
+    background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
+}
+
+.manual-entry-card .form-label {
+    color: #123b5d;
+    font-weight: 650;
+}
+
+.manual-entry-card .form-control,
+.manual-entry-card .form-select,
+.manual-entry-card .input-group-text {
+    min-height: 44px;
+    border-color: #a9cfe9;
+}
+
+.manual-entry-card .form-control:focus,
+.manual-entry-card .form-select:focus {
+    border-color: var(--manual-sky);
+    box-shadow: 0 0 0 0.22rem rgba(14, 165, 233, 0.2);
+}
+
+.manual-entry-card .input-group-text {
+    min-width: 88px;
+    justify-content: center;
+    color: #0b4f75;
+    background: var(--manual-soft);
+    font-weight: 650;
+}
+
+.manual-entry-card .errorlist {
+    color: #b42318;
+}
+
+.manual-submit {
+    border-color: #0b75d1;
+    background: linear-gradient(120deg, #0ea5e9, #0d6efd);
+}
+
+.manual-submit:hover {
+    border-color: #075ca8;
+    background: linear-gradient(120deg, #0284c7, #0b5ed7);
+}

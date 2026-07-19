@@ -1,0 +1,123 @@
+<div class="a11y-widget{% if not user.is_authenticated %} a11y-widget--standalone{% endif %}" data-a11y-widget>
+    <button
+        type="button"
+        class="a11y-launcher"
+        id="a11y-launcher"
+        aria-label="Abrir menú de accesibilidad"
+        aria-expanded="false"
+        aria-controls="a11y-panel"
+        data-a11y-open
+    >
+        <svg class="a11y-launcher-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="3.75" r="2.25"></circle>
+            <path d="M4 7.5c2.45 1.15 5.12 1.72 8 1.72s5.55-.57 8-1.72"></path>
+            <path d="M12 9.25v5.1"></path>
+            <path d="m8.6 21 3.4-6.65L15.4 21"></path>
+        </svg>
+        <span>Accesibilidad</span>
+    </button>
+
+    <div class="a11y-backdrop" data-a11y-backdrop hidden></div>
+
+    <aside
+        class="a11y-panel"
+        id="a11y-panel"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="a11y-panel-title"
+        aria-describedby="a11y-panel-description"
+        tabindex="-1"
+        hidden
+        data-a11y-panel
+    >
+        <div class="a11y-panel-header">
+            <div>
+                <h2 id="a11y-panel-title">Opciones de accesibilidad</h2>
+                <p id="a11y-panel-description">Ajusta la presentación del sitio. Estas preferencias no identifican una discapacidad.</p>
+            </div>
+            <button type="button" class="a11y-close" aria-label="Cerrar menú de accesibilidad" data-a11y-close>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M6 6l12 12M18 6 6 18"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="a11y-panel-body">
+            <fieldset class="a11y-fieldset">
+                <legend>Tamaño del texto</legend>
+                <div class="a11y-range-row">
+                    <input
+                        type="range"
+                        id="a11y-text-scale"
+                        min="100"
+                        max="200"
+                        step="25"
+                        value="100"
+                        aria-describedby="a11y-text-help a11y-text-value"
+                        data-a11y-text-scale
+                    >
+                    <output id="a11y-text-value" for="a11y-text-scale" data-a11y-text-value>100 %</output>
+                </div>
+                <p class="a11y-help" id="a11y-text-help">Elige entre 100 % y 200 %.</p>
+            </fieldset>
+
+            <div class="a11y-control">
+                <label for="a11y-theme">Apariencia</label>
+                <select id="a11y-theme" data-a11y-theme>
+                    <option value="system">Usar preferencia del sistema</option>
+                    <option value="light">Modo claro</option>
+                    <option value="dark">Modo oscuro</option>
+                </select>
+            </div>
+
+            <div class="a11y-switch-list">
+                <label class="a11y-switch">
+                    <span>
+                        <strong>Alto contraste</strong>
+                        <small>Refuerza colores, bordes y controles.</small>
+                    </span>
+                    <input type="checkbox" data-a11y-toggle="contrast">
+                </label>
+
+                <label class="a11y-switch">
+                    <span>
+                        <strong>Escala de grises</strong>
+                        <small>Reduce los colores sin ocultar contenido.</small>
+                    </span>
+                    <input type="checkbox" data-a11y-toggle="grayscale">
+                </label>
+
+                <label class="a11y-switch">
+                    <span>
+                        <strong>Fuente de lectura accesible</strong>
+                        <small>Usa una pila tipográfica local y legible.</small>
+                    </span>
+                    <input type="checkbox" data-a11y-toggle="readableFont">
+                </label>
+
+                <label class="a11y-switch">
+                    <span>
+                        <strong>Resaltar enlaces</strong>
+                        <small>Subraya enlaces de contenido, no botones.</small>
+                    </span>
+                    <input type="checkbox" data-a11y-toggle="highlightLinks">
+                </label>
+
+
+                <label class="a11y-switch">
+                    <span>
+                        <strong>Reducir movimiento</strong>
+                        <small>Detiene animaciones y transiciones no esenciales.</small>
+                    </span>
+                    <input type="checkbox" data-a11y-toggle="reduceMotion">
+                </label>
+            </div>
+
+            <button type="button" class="a11y-reset" data-a11y-reset>Restablecer opciones</button>
+        </div>
+
+        <p class="a11y-status" role="status" aria-live="polite" aria-atomic="true" data-a11y-status></p>
+    </aside>
+
+
+</div>

@@ -1,0 +1,604 @@
+:root {
+    --institutional-red: #dc2626;
+    --institutional-red-dark: #991b1b;
+    --institutional-red-accent: #7f1d1d;
+    --institutional-red-soft: #fef2f2;
+    --institutional-gray-button: #64748b;
+    --institutional-gray-button-hover: #475569;
+    --institutional-gray-button-border: #64748b;
+    --institutional-charcoal: #475569;
+    --institutional-black: #475569;
+    --institutional-gray: #5f6368;
+    --institutional-border: #d1d5db;
+    --institutional-surface: #ffffff;
+    --institutional-background: #f4f4f4;
+}
+
+/*
+ * Tema institucional de la aplicación.
+ * El header principal está fuera de .app-content y no se modifica aquí.
+ */
+.app-content {
+    color: var(--institutional-charcoal);
+}
+
+.app-content a:not(.btn):not(.button):not(.qr-btn) {
+    color: var(--institutional-red-dark);
+}
+
+.app-content h1,
+.app-content h2,
+.app-content h3,
+.app-content h4,
+.app-content h5,
+.app-content h6 {
+    color: var(--institutional-charcoal);
+}
+
+.app-content .card,
+.app-content .qr-card,
+.app-content .taller-form-panel,
+.app-content .modal-content {
+    border-color: var(--institutional-border) !important;
+    background-color: var(--institutional-surface);
+    box-shadow: 0 10px 28px rgba(31, 31, 31, 0.1);
+}
+
+.app-content .card {
+    border-top: 4px solid var(--institutional-red);
+}
+
+.app-content .card-header,
+.app-content .manual-entry-header,
+.app-content .bg-primary,
+.app-content .bg-success,
+.app-content .bg-info {
+    border-color: var(--institutional-red-dark) !important;
+    background: linear-gradient(120deg, var(--institutional-red), var(--institutional-red-dark)) !important;
+    color: #ffffff !important;
+}
+
+.app-content .card-header h1,
+.app-content .card-header h2,
+.app-content .card-header h3,
+.app-content .card-header h4,
+.app-content .card-header h5,
+.app-content .card-header h6,
+.app-content .modal-header h1,
+.app-content .modal-header h2,
+.app-content .modal-header h3,
+.app-content .modal-header h4,
+.app-content .modal-header h5,
+.app-content .modal-header h6 {
+    color: inherit;
+}
+
+.app-content .bg-dark {
+    border-color: var(--institutional-gray-button-border) !important;
+    border-top: 4px solid var(--institutional-red) !important;
+    background: linear-gradient(145deg, #4b5563, #64748b) !important;
+    color: #ffffff !important;
+}
+
+.app-content .bg-light {
+    background-color: var(--institutional-background) !important;
+}
+
+.app-content .btn-primary,
+.app-content .btn-success,
+.app-content .btn-info,
+.app-content .manual-submit,
+.app-content .button:not(.button-secondary):not(.button-danger),
+.app-content .qr-btn:not(.secondary) {
+    border-color: var(--institutional-red) !important;
+    background: var(--institutional-red) !important;
+    color: #ffffff !important;
+}
+
+.app-content .btn-primary:hover,
+.app-content .btn-primary:focus,
+.app-content .btn-success:hover,
+.app-content .btn-success:focus,
+.app-content .btn-info:hover,
+.app-content .btn-info:focus,
+.app-content .manual-submit:hover,
+.app-content .manual-submit:focus,
+.app-content .button:not(.button-secondary):not(.button-danger):hover,
+.app-content .button:not(.button-secondary):not(.button-danger):focus,
+.app-content .qr-btn:not(.secondary):hover,
+.app-content .qr-btn:not(.secondary):focus {
+    border-color: var(--institutional-red-dark) !important;
+    background: var(--institutional-red-dark) !important;
+    color: #ffffff !important;
+}
+
+.app-content .btn-secondary,
+.app-content .button-secondary,
+.app-content .qr-btn.secondary {
+    border-color: var(--institutional-charcoal) !important;
+    background: var(--institutional-charcoal) !important;
+    color: #ffffff !important;
+}
+
+.app-content .btn-secondary:hover,
+.app-content .btn-secondary:focus,
+.app-content .button-secondary:hover,
+.app-content .button-secondary:focus,
+.app-content .qr-btn.secondary:hover,
+.app-content .qr-btn.secondary:focus {
+    border-color: var(--institutional-gray-button-hover) !important;
+    background: var(--institutional-gray-button-hover) !important;
+    color: #ffffff !important;
+}
+
+.app-content .qr-btn.secondary {
+    border-color: var(--institutional-red-accent) !important;
+    background: var(--institutional-red-accent) !important;
+}
+
+.app-content .qr-btn.secondary:hover,
+.app-content .qr-btn.secondary:focus {
+    border-color: #681717 !important;
+    background: #681717 !important;
+}
+
+.app-content .btn-outline-primary {
+    border-color: var(--institutional-red) !important;
+    color: var(--institutional-red-dark) !important;
+}
+
+.app-content .btn-outline-primary:hover,
+.app-content .btn-outline-primary:focus {
+    background: var(--institutional-red) !important;
+    color: #ffffff !important;
+}
+
+.app-content .btn-outline-secondary {
+    border-color: var(--institutional-charcoal) !important;
+    color: var(--institutional-charcoal) !important;
+}
+
+.app-content .btn-outline-secondary:hover,
+.app-content .btn-outline-secondary:focus {
+    background: var(--institutional-charcoal) !important;
+    color: #ffffff !important;
+}
+
+.app-content .btn-danger,
+.app-content .button-danger {
+    border-color: var(--institutional-red-dark) !important;
+    background: var(--institutional-red-dark) !important;
+    color: #ffffff !important;
+}
+
+.app-content input:not([type="checkbox"]):not([type="radio"]),
+.app-content select,
+.app-content textarea,
+.login-panel input {
+    border-color: var(--institutional-border);
+    background-color: #ffffff;
+    color: var(--institutional-charcoal);
+}
+
+.app-content input:not([type="checkbox"]):not([type="radio"]):focus,
+.app-content select:focus,
+.app-content textarea:focus,
+.login-panel input:focus {
+    border-color: var(--institutional-red) !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.16) !important;
+    outline: 0;
+}
+
+.app-content .form-check-input:checked {
+    border-color: var(--institutional-red);
+    background-color: var(--institutional-red);
+}
+
+.app-content table {
+    --bs-table-striped-bg: #f2f2f2;
+    --bs-table-hover-bg: var(--institutional-red-soft);
+    border-color: var(--institutional-border);
+}
+
+.app-content table thead th,
+.app-content .lista-actividades th,
+.app-content .talleres-precargados th {
+    border-bottom: 3px solid var(--institutional-red) !important;
+    background: var(--institutional-charcoal) !important;
+    color: #ffffff !important;
+}
+
+.app-content table tbody tr:hover {
+    background-color: var(--institutional-red-soft);
+}
+
+.app-content .text-bg-secondary,
+.app-content .badge.bg-secondary {
+    background-color: var(--institutional-charcoal) !important;
+    color: #ffffff !important;
+}
+
+.app-content .progress {
+    background-color: #e5e7eb;
+}
+
+.app-content .progress-bar.bg-secondary {
+    background-color: var(--institutional-red) !important;
+}
+
+.app-content .info-profesor,
+.app-content .form-help,
+.app-content .manual-entry-card .form-text {
+    color: var(--institutional-gray);
+}
+
+.app-content .info-profesor,
+.app-content .page-title-banner {
+    border: 1px solid var(--institutional-red-dark);
+    border-radius: 12px;
+    background: linear-gradient(120deg, var(--institutional-red), var(--institutional-red-dark)) !important;
+    box-shadow: 0 8px 20px rgba(153, 27, 27, 0.16);
+    color: #ffffff !important;
+}
+
+.app-content .page-title-banner {
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    text-align: center;
+}
+
+.app-content .info-profesor *,
+.app-content .page-title-banner * {
+    color: #ffffff !important;
+}
+
+.app-content .info-profesor h1,
+.app-content .info-profesor p,
+.app-content .page-title-banner {
+    color: #ffffff !important;
+}
+
+.app-content .modal-header {
+    border-bottom-color: var(--institutional-red);
+}
+
+.app-content .modal-header.bg-danger {
+    background: var(--institutional-red-dark) !important;
+}
+
+/* Utilidades de color usadas por el Panel de Sostenibilidad. */
+.app-content .dashboard-hero,
+.app-content .dashboard-card-header {
+    border-color: var(--institutional-red-dark) !important;
+    background-color: var(--institutional-red-dark) !important;
+    background-image: none !important;
+    background: linear-gradient(120deg, var(--institutional-red-dark), var(--institutional-red)) !important;
+}
+
+.app-content .dashboard-hero > div {
+    min-height: 220px;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    padding-top: clamp(2rem, 4vw, 3rem) !important;
+    padding-bottom: clamp(2rem, 4vw, 3rem) !important;
+}
+
+.app-content .dashboard-hero h1 {
+    max-width: 760px;
+    font-size: clamp(2.35rem, 5vw, 3.65rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.03em;
+}
+
+.app-content .dashboard-hero .dashboard-hero-subtitle {
+    max-width: 720px;
+    margin-top: 0.75rem !important;
+    font-size: clamp(1.1rem, 2.2vw, 1.45rem) !important;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.app-content .dashboard-user-badge {
+    padding: 0.55rem 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    background: var(--institutional-red-accent) !important;
+    box-shadow: 0 5px 14px rgba(69, 10, 10, 0.2);
+    font-size: 0.92rem !important;
+}
+
+.app-content .dashboard-hero,
+.app-content .dashboard-hero *,
+.app-content .dashboard-card-header,
+.app-content .dashboard-card-header * {
+    color: #ffffff !important;
+}
+
+.app-content .dashboard-card-header h2 > span,
+.app-content .dashboard-card-header > span {
+    background-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.app-content .dashboard-hero a,
+.app-content .dashboard-hero button {
+    min-height: 42px;
+    padding: 0.65rem 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.68) !important;
+    background: var(--institutional-red-accent) !important;
+    color: #ffffff !important;
+    box-shadow: 0 5px 14px rgba(69, 10, 10, 0.22) !important;
+}
+
+.app-content .dashboard-hero a:hover,
+.app-content .dashboard-hero a:focus,
+.app-content .dashboard-hero button:hover,
+.app-content .dashboard-hero button:focus {
+    border-color: #ffffff !important;
+    background: #681717 !important;
+    color: #ffffff !important;
+}
+
+@media (max-width: 640px) {
+    .app-content .dashboard-hero > div {
+        min-height: 0;
+        padding-top: 1.6rem !important;
+        padding-bottom: 1.6rem !important;
+    }
+
+    .app-content .dashboard-hero h1 {
+        font-size: clamp(2rem, 11vw, 2.65rem) !important;
+    }
+
+    .app-content .dashboard-user-badge {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .app-content .dashboard-hero .dashboard-action {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+}
+
+.app-content [class*="bg-gradient-to-"][class*="from-sky-"],
+.app-content [class*="bg-gradient-to-"][class*="from-cyan-"],
+.app-content [class*="bg-gradient-to-"][class*="from-blue-"] {
+    background-image: linear-gradient(120deg, var(--institutional-charcoal), #6b7280) !important;
+}
+
+.app-content a[class*="bg-cyan-"],
+.app-content a[class*="bg-sky-"],
+.app-content a[class*="bg-blue-"],
+.app-content a[class*="bg-red-"],
+.app-content a[class*="bg-rose-"],
+.app-content button[class*="bg-cyan-"],
+.app-content button[class*="bg-sky-"],
+.app-content button[class*="bg-blue-"],
+.app-content button[class*="bg-red-"],
+.app-content button[class*="bg-rose-"] {
+    background-color: var(--institutional-gray-button) !important;
+    border-color: var(--institutional-gray-button-border) !important;
+    color: #ffffff !important;
+}
+
+.app-content [class*="hover:bg-cyan-"]:hover,
+.app-content [class*="hover:bg-sky-"]:hover,
+.app-content [class*="hover:bg-blue-"]:hover,
+.app-content [class*="hover:bg-red-"]:hover,
+.app-content [class*="hover:bg-rose-"]:hover {
+    background-color: var(--institutional-gray-button-hover) !important;
+}
+
+.app-content a[class*="hover:bg-cyan-"]:hover,
+.app-content a[class*="hover:bg-sky-"]:hover,
+.app-content a[class*="hover:bg-blue-"]:hover,
+.app-content a[class*="hover:bg-red-"]:hover,
+.app-content a[class*="hover:bg-rose-"]:hover,
+.app-content button[class*="hover:bg-cyan-"]:hover,
+.app-content button[class*="hover:bg-sky-"]:hover,
+.app-content button[class*="hover:bg-blue-"]:hover,
+.app-content button[class*="hover:bg-red-"]:hover,
+.app-content button[class*="hover:bg-rose-"]:hover {
+    background-color: var(--institutional-gray-button-hover) !important;
+}
+
+
+.app-content [class*="text-cyan-"],
+.app-content [class*="text-sky-"],
+.app-content [class*="text-blue-"] {
+    color: var(--institutional-charcoal) !important;
+}
+
+/* Textos secundarios con contraste AA sobre superficies claras. */
+.app-content [class*="text-gray-400"],
+.app-content [class*="text-gray-500"] {
+    color: #374151 !important;
+}
+
+.app-content [class*="bg-cyan-"][class*="text-white"],
+.app-content [class*="bg-sky-"][class*="text-white"],
+.app-content [class*="bg-blue-"][class*="text-white"],
+.app-content [class*="bg-cyan-"][class*="text-cyan-"],
+.app-content [class*="bg-sky-"][class*="text-sky-"],
+.app-content [class*="bg-blue-"][class*="text-blue-"],
+.app-content [class*="bg-gradient-to-"][class*="text-white"],
+.app-content [class*="bg-gradient-to-"] [class*="text-white"],
+.app-content [class*="bg-gradient-to-"] h1,
+.app-content [class*="bg-gradient-to-"] h2,
+.app-content [class*="bg-gradient-to-"] h3 {
+    color: #ffffff !important;
+}
+
+.app-content [class*="border-cyan-"],
+.app-content [class*="border-sky-"],
+.app-content [class*="border-blue-"] {
+    border-color: #6b7280 !important;
+}
+
+.app-content [class*="ring-cyan-"],
+.app-content [class*="ring-sky-"],
+.app-content [class*="ring-blue-"] {
+    --tw-ring-color: rgba(220, 38, 38, 0.45) !important;
+}
+
+/* Sustituye utilidades casi negras por gris institucional legible. */
+.app-content [class*="bg-gray-900"],
+.app-content [class*="bg-slate-900"],
+.app-content [class*="bg-neutral-900"],
+.app-content [class*="bg-zinc-900"],
+.app-content [class*="bg-black"] {
+    background-color: var(--institutional-gray-button) !important;
+    color: #ffffff !important;
+}
+
+.app-content [class*="bg-gray-900"] *,
+.app-content [class*="bg-slate-900"] *,
+.app-content [class*="bg-neutral-900"] *,
+.app-content [class*="bg-zinc-900"] *,
+.app-content [class*="bg-black"] * {
+    color: #ffffff !important;
+}
+
+/* Todos los botones ofrecen respuesta táctil visible al presionarse. */
+button,
+.btn,
+.button,
+.qr-btn,
+.app-popup-button,
+a.btn,
+a.button,
+a.qr-btn {
+    transition:
+        transform 80ms ease,
+        box-shadow 80ms ease,
+        background-color 140ms ease,
+        border-color 140ms ease !important;
+}
+
+button:not(:disabled):active,
+.btn:not(.disabled):active,
+.button:not(.disabled):active,
+.qr-btn:not(.disabled):active,
+.app-popup-button:not(:disabled):active,
+a.btn:not(.disabled):active,
+a.button:not(.disabled):active,
+a.qr-btn:not(.disabled):active {
+    transform: translateY(2px) scale(0.985) !important;
+    box-shadow:
+        inset 0 3px 7px rgba(30, 41, 59, 0.32),
+        0 1px 2px rgba(30, 41, 59, 0.18) !important;
+}
+
+/* Acceso: conserva la composición y refuerza la identidad institucional. */
+.login-panel {
+    border-top: 6px solid var(--institutional-red);
+}
+
+.login-panel h1,
+.login-context h2 {
+    color: var(--institutional-charcoal);
+}
+
+.login-context h2,
+.login-context p {
+    color: #ffffff;
+}
+
+body.no-brand {
+    background:
+        linear-gradient(135deg, rgba(71, 85, 105, 0.96), rgba(153, 27, 27, 0.9)),
+        var(--institutional-gray-button);
+}
+
+.brand-block {
+    color: var(--institutional-charcoal);
+}
+
+.password-toggle:focus-visible {
+    outline-color: var(--institutional-red) !important;
+}
+
+/* Pop-ups institucionales, incluidos confirmaciones y mensajes automáticos. */
+.app-popup-overlay {
+    background: rgba(71, 85, 105, 0.72);
+}
+
+.app-popup-dialog {
+    border-color: rgba(51, 51, 51, 0.32);
+    box-shadow: 0 24px 70px rgba(31, 31, 31, 0.38);
+}
+
+.app-popup-header,
+.app-popup-dialog[data-type="success"] .app-popup-header {
+    background: linear-gradient(120deg, var(--institutional-gray-button-hover), #6b7280);
+}
+
+.app-popup-dialog[data-type="info"] .app-popup-header {
+    background: var(--institutional-gray-button);
+}
+
+.app-popup-dialog[data-type="warning"] .app-popup-header,
+.app-popup-dialog[data-type="confirm"] .app-popup-header {
+    background: linear-gradient(120deg, var(--institutional-gray-button), var(--institutional-red-dark));
+}
+
+.app-popup-dialog[data-type="error"] .app-popup-header {
+    background: var(--institutional-red-dark);
+}
+
+.app-popup-body {
+    color: var(--institutional-charcoal);
+}
+
+.app-popup-button-primary {
+    background: var(--institutional-red);
+}
+
+.app-popup-button-primary:hover,
+.app-popup-button-primary:focus {
+    background: var(--institutional-red-dark);
+}
+
+.app-popup-button-secondary {
+    background: #e5e7eb;
+    color: var(--institutional-charcoal);
+}
+
+.app-popup-button-danger {
+    background: var(--institutional-red-dark);
+}
+
+.app-popup-progress {
+    background: #e5e7eb;
+}
+
+.app-popup-progress-bar,
+.app-popup-dialog[data-type="success"] .app-popup-progress-bar,
+.app-popup-dialog[data-type="warning"] .app-popup-progress-bar,
+.app-popup-dialog[data-type="confirm"] .app-popup-progress-bar {
+    background: var(--institutional-red);
+}
+
+.app-popup-dialog[data-type="info"] .app-popup-progress-bar {
+    background: var(--institutional-gray-button);
+}
+
+.app-popup-dialog[data-type="error"] .app-popup-progress-bar {
+    background: var(--institutional-red-dark);
+}
+
+/* Vertical reading guide: fixed thin bar on the left edge (full viewport height) */
+.vertical-reading-guide {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 6px !important;
+    height: 100vh !important; /* force full viewport height */
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--institutional-red) !important;
+    z-index: 2147483647 !important; /* on top of all UI */
+    pointer-events: none !important; /* don't block clicks */
+    transform: none !important;
+    -webkit-transform: none !important;
+    will-change: auto !important;
+}

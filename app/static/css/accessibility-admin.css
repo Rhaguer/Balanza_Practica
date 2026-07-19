@@ -1,0 +1,50 @@
+#header {
+    position: relative;
+    padding-inline-end: 12rem;
+}
+
+#header .a11y-widget:not(.a11y-widget--standalone) {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    margin: 0;
+    transform: translateY(-50%);
+}
+
+#header .a11y-launcher {
+    min-height: 44px;
+}
+
+body.login #header .a11y-widget,
+body.login #header .a11y-widget:not(.a11y-widget--standalone) {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    margin: 0;
+    transform: none;
+}
+
+@media (max-width: 640px) {
+    #header {
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding-inline-end: 1rem;
+    }
+
+    #branding {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        width: 100%;
+        gap: 0.5rem;
+    }
+
+    #header .a11y-widget:not(.a11y-widget--standalone) {
+        position: static;
+        grid-column: 2;
+        flex: 0 0 auto;
+        margin-inline-start: auto;
+        transform: none;
+    }
+}

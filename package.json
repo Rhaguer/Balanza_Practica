@@ -1,0 +1,12 @@
+{
+  "name": "proyecto-titulo-accessibility-tests",
+  "private": true,
+  "scripts": {
+    "test:a11y": "node scripts/axe_audit.mjs",
+    "test:a11y-ui": "node scripts/accessibility_ui_test.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "4.12.1",
+    "selenium-webdriver": "4.46.0"
+  }
+}

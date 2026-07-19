@@ -1,0 +1,517 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background-color: #f4f6f8;
+    color: #333;
+}
+
+header {
+    background-color: #475569;
+    color: white;
+    padding: 0.9rem 0;
+}
+
+header img {
+    width: clamp(96px, 15vw, 150px);
+    max-width: 150px;
+    height: auto;
+    flex: 0 0 auto;
+}
+
+.container-header {
+    width: 94%;
+    max-width: 1600px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(0.55rem, 0.9vw, 1rem);
+    flex: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    white-space: nowrap;
+}
+
+header nav.main-nav {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+}
+
+header nav a,
+header nav button {
+    display: inline-flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: clamp(0.9rem, 0.95vw, 1rem);
+    line-height: 1.2;
+    min-height: 32px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+header nav form {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex: 0 0 auto;
+    width: auto;
+    margin: 0 !important;
+}
+
+header nav button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.header-logout-button {
+    white-space: nowrap;
+}
+
+header nav a:hover,
+header nav button:hover {
+    text-decoration: underline;
+}
+
+button,
+input[type="submit"],
+input[type="button"],
+.button,
+.btn,
+[role="button"],
+a.button,
+a.btn,
+a[class*="rounded-md"],
+a[class*="rounded-lg"] {
+    transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.12s ease;
+}
+
+button:not(:disabled):active,
+input[type="submit"]:not(:disabled):active,
+input[type="button"]:not(:disabled):active,
+.button:not(:disabled):active,
+.btn:not(:disabled):active,
+[role="button"]:active,
+a.button:active,
+a.btn:active,
+a[class*="rounded-md"]:active,
+a[class*="rounded-lg"]:active {
+    transform: translateY(2px);
+    filter: brightness(0.96);
+}
+
+button:disabled,
+.button:disabled,
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+@media (max-width: 900px) {
+    .container-header {
+        width: 94%;
+        gap: 1rem;
+    }
+
+    header nav {
+        gap: 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .container-header {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    header nav {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        justify-content: flex-start;
+        padding-bottom: 0.15rem;
+    }
+
+    .container-header > .a11y-widget {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+    }
+
+    header nav.main-nav {
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+        max-width: 100%;
+        min-width: 0;
+        overflow-x: clip !important;
+        white-space: normal !important;
+    }
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+}
+
+h2, h3 {
+    color: #000000;
+
+}
+
+.info-profesor {
+    background-color: #e6f0ff;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    font-family: Arial, sans-serif;
+
+}
+
+.profesor-page {
+    width: min(1200px, calc(100% - 2rem));
+    max-width: 1200px;
+    margin: 1rem auto;
+    min-width: 0;
+}
+
+.info-profesor h1,
+.info-profesor p {
+    margin: 0;
+}
+
+.info-profesor h1 {
+    font-size: 1.75rem;
+    line-height: 1.2;
+}
+
+.info-profesor p {
+    margin-top: 0.35rem;
+}
+
+.agenda {
+    margin-bottom: 2rem;
+}
+
+.taller-creation-launch {
+    display: flex;
+    align-items: center;
+}
+
+.tipo-taller-panel {
+    background-color: white;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.tipo-taller-panel h3,
+.taller-form-panel h3,
+.taller-form-panel p {
+    margin: 0;
+}
+
+.tipo-taller-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.tipo-taller-option {
+    min-height: 48px;
+    width: 100%;
+    border: 1px solid #64748b;
+    border-radius: 8px;
+    background-color: #64748b;
+    color: #ffffff;
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tipo-taller-option strong,
+.tipo-taller-option span {
+    display: block;
+    color: #ffffff;
+}
+
+.tipo-taller-option span {
+    margin-top: 0.25rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.tipo-taller-option:hover,
+.tipo-taller-option:focus-visible {
+    border-color: #475569;
+    background-color: #475569;
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+}
+
+.taller-form-panel .section-heading {
+    gap: 0.35rem;
+    margin-top: 0;
+}
+
+.form-actividad {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.form-actividad input,
+.form-actividad textarea,
+.form-actividad select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.button:hover {
+    background-color: #e00000;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.form-errors {
+    margin: 0.4rem 0 0.8rem;
+    color: #b91c1c;
+    font-size: 0.9rem;
+}
+
+.form-errors ul {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.form-help {
+    margin-top: -0.65rem;
+    margin-bottom: 0.8rem;
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.button-secondary {
+    background-color: #334155;
+}
+
+.button-secondary:hover {
+    background-color: #475569;
+}
+
+.button-danger {
+    background-color: #dc2626;
+}
+
+.button-danger:hover {
+    background-color: #b91c1c;
+}
+
+.button-small {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.9rem;
+}
+
+.delete-activity-form {
+    margin: 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.section-heading h3 {
+    margin: 0;
+    width: 100%;
+}
+
+.section-heading form {
+    margin: 0;
+}
+
+.talleres-precargados {
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+.talleres-precargados .section-heading h4,
+.talleres-precargados .section-heading p {
+    color: #1f2937;
+}
+
+.talleres-precargados table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.talleres-precargados th,
+.talleres-precargados td {
+    border: 1px solid #ccc;
+    padding: 0.55rem;
+    text-align: left;
+}
+
+.talleres-precargados td {
+    color: #1f2937;
+}
+
+.talleres-precargados th {
+    background-color: #b4b4b4;
+    color: white;
+}
+
+.cargar-taller-form,
+.archive-actions form {
+    margin: 0;
+}
+
+.archive-actions {
+    margin: 1rem 0;
+}
+
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-inactive {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.lista-actividades table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.lista-actividades th, .lista-actividades td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.lista-actividades th {
+    background-color: #b4b4b4;
+    color: white;
+}
+
+footer:not(.site-footer) {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #475569;
+    color: white;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.table-scroll:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+    .profesor-page {
+        width: min(100% - 1rem, 1200px);
+        margin: 0.5rem auto 1rem;
+    }
+
+    .info-profesor,
+    .tipo-taller-panel,
+    .form-actividad {
+        padding: 0.85rem;
+    }
+
+    .info-profesor h1 {
+        font-size: 1.35rem;
+    }
+
+    .tipo-taller-options {
+        grid-template-columns: 1fr;
+    }
+
+    .tipo-taller-option {
+        min-height: 56px;
+    }
+
+    .form-actividad input,
+    .form-actividad textarea,
+    .form-actividad select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    .form-actions .button {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+}

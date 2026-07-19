@@ -1,0 +1,91 @@
+{% extends "./base.html" %}
+
+{% block title %}Gestión de Categorías{% endblock %}
+{% load static %}
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/usuarios.css' %}">
+<link rel="stylesheet" href="{% static 'css/gestion_categorias.css' %}">
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} mb-3">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-lg-4">
+        <h3 class="page-title-banner" id="titulo-registro-categoria">Agregar Categoría</h3>
+        <div class="card mt-4 mb-4 shadow">
+            <div class="card-body ">
+                <form
+                    method="post"
+                    class="p-4 border rounded bg-dark"
+                    id="form-categoria"
+                >
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_nombre" class="text-white">Nombre</label>
+                        {{ form.nombre }}
+                        {{ form.nombre.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_tipo_operacional" class="text-white">Tipo de residuo</label>
+                        {{ form.tipo_operacional }}
+                        {{ form.tipo_operacional.errors }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_descripcion" class="text-white">Descripción</label>
+                        {{ form.descripcion }}
+                        {{ form.descripcion.errors }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100" id="guardar-registro-categoria">
+                        Guardar Categoría
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <h3 class="page-title-banner">Listado de Categorías</h3>
+        <div class="table-responsive py-2">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Tipo de residuo</th>
+                        <th>Descripción</th>
+                        <th colspan="2" class="text-center">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for categoria in categoriaResiduos %}
+                    <tr>
+                        <td>{{ categoria.id_categoria }}</td>
+                        <td>{{ categoria.nombre }}</td>
+                        <td>{{ categoria.get_tipo_operacional_display }}</td>
+                        <td>{{ categoria.descripcion }}</td>
+                        <td><a href="{% url 'editarCategorias' categoria.id_categoria %}" class="btn btn-info">Editar</a></td>
+                        <td>
+                            <form method="post" action="{% url 'eliminarCategoria' categoria.id_categoria %}" class="d-inline"
+                                  data-confirm-title="Eliminar categoría"
+                                  data-confirm-message="¿Desea eliminar esta categoría? Esta acción no se puede deshacer."
+                                  data-confirm-accept="Eliminar">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btnEliminarCategoria">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

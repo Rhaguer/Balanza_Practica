@@ -1,0 +1,29 @@
+.env
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Entornos locales
+.venv/
+venv/
+env_win/
+
+# Datos y archivos generados en cada PC
+db.sqlite3
+media/
+staticfiles/
+logs/
+backups/
+outputs/
+tmp/
+Backup BD/
+Backup Codigo/
+django-runserver.*.log
+
+# Sistema operativo/editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+node_modules/

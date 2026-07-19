@@ -1,0 +1,203 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}Formulario de Residuos{% endblock %}
+
+{% block body %}
+  <div class="py-5">
+    <div class="card shadow-lg">
+      <div class="card-header bg-primary text-white text-center">
+        <h3 class="mb-0">Información del taller</h3>
+      </div>
+      <div class="card-body">
+
+        <form id="residuo-formulario">
+          {% csrf_token %}
+          <input type="hidden" id="taller_id">
+
+          <div class="mb-3">
+            <label class="form-label">Nombre del taller</label>
+            <input type="text" class="form-control" id="asignatura" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <input type="text" class="form-control" id="seccion" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Profesor</label>
+            <input type="text" class="form-control" id="profesor" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Horario</label>
+            <input type="text" class="form-control" id="horario" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Número de clase</label>
+            <input type="text" class="form-control" id="numero_clase" readonly>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Hora de Escaneo</label>
+            <input type="text" class="form-control" id="hora_escaneo" readonly>
+          </div>
+
+          <div class="d-grid">
+            <button type="button" class="btn btn-success" id="confirmar-btn">
+                Confirmar taller
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================================================= -->
+  <!-- Modal de selección de taller en conflicto -->
+  <!-- ================================================= -->
+  <div class="modal fade" id="modalConflicto" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">Conflicto de horarios</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <p>Hay varios talleres activos. Selecciona el correcto:</p>
+          <div id="lista-actividades-conflicto"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+<script>
+function getCookie(name) {
+    let v = document.cookie.split("; ").find(row => row.startsWith(name+"="));
+    return v ? v.split("=")[1] : null;
+}
+const csrftoken = getCookie("csrftoken");
+const obtenerDatosUrl = "{% url 'api_obtener_datos' %}";
+const fueraHorarioUrl = "{% url 'fuerahorario' %}";
+const seleccionarActividadBaseUrl = "{% url 'seleccionar_actividad' 0 %}".replace("/0/", "/");
+
+/* ================================================================
+   🔥 CARGAR DATOS DEL TALLER SEGÚN HORA ACTUAL
+================================================================*/
+window.addEventListener("load", function () {
+
+    fetch(obtenerDatosUrl)
+    .then(r => r.json())
+    .then(data => {
+
+        if (data.fuera_horario === true) {
+            window.location.href = fueraHorarioUrl;
+            return;
+        }
+
+        if (data.multiple === true) {
+            cargarModal(data.actividades);
+            new bootstrap.Modal(document.getElementById("modalConflicto")).show();
+            return;
+        }
+
+        cargarFormulario(data);
+    });
+
+});
+
+function cargarFormulario(data) {
+    document.getElementById("taller_id").value = data.id;
+    document.getElementById("asignatura").value = data.asignatura;
+    document.getElementById("seccion").value = data.seccion;
+    document.getElementById("profesor").value = data.profesor;
+    document.getElementById("horario").value = data.horario;
+    document.getElementById("numero_clase").value = data.numero_clase;
+    document.getElementById("hora_escaneo").value = data.hora_escaneo;
+}
+
+/* ================================================================
+   Modal para seleccionar taller
+================================================================*/
+function cargarModal(lista) {
+    const cont = document.getElementById("lista-actividades-conflicto");
+    cont.innerHTML = "";
+
+    lista.forEach(c => {
+        cont.innerHTML += `
+            <div class="border rounded p-3 mb-3 shadow-sm">
+                <strong>${c.asignatura}</strong><br>
+                ${c.seccion}<br>
+                ${c.horario}<br>
+                <div class="d-flex justify-content-end mt-2">
+                    <button
+                        class="btn btn-sm btn-danger seleccionar-btn"
+                        data-id="${c.id}">
+                        Seleccionar
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    document.querySelectorAll(".seleccionar-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            seleccionar(btn.dataset.id);
+        });
+    });
+}
+
+function seleccionar(id){
+    fetch(`${seleccionarActividadBaseUrl}${id}/`)
+    .then(r => r.json())
+    .then(data => {
+        cargarFormulario(data);
+        bootstrap.Modal.getInstance(document.getElementById("modalConflicto")).hide();
+    });
+}
+
+
+/* ================================================================
+   🔥 CONFIRMAR TALLER (CREA RESIDUO Y GUARDA EL ID)
+================================================================*/
+document.getElementById("confirmar-btn").addEventListener("click", async () => {
+
+    const formData = new FormData();
+    formData.append("taller_id", document.getElementById("taller_id").value);
+
+    const response = await fetch("{% url 'guardar' %}", {
+        method: "POST",
+        body: formData,
+        headers: { "X-CSRFToken": csrftoken },
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+
+        /* 🔥 GUARDAR EL ID DEL RESIDUO
+           PARA USARLO LUEGO EN actualizar_residuo() */
+        localStorage.setItem("residuo_id", data.id);
+        localStorage.setItem("registro_contexto", JSON.stringify(data.registro_contexto));
+
+        window.location.href = data.redirect;
+
+    } else {
+        if (data.redirect) {
+            window.location.href = data.redirect;
+            return;
+        }
+        alert(data.error || "Error al confirmar el taller");
+    }
+});
+</script>
+
+{% endblock %}

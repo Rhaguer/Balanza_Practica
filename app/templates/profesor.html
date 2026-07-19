@@ -1,0 +1,300 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}Talleres | Sistema de Gestión de Residuos{% endblock %}
+
+{% block body %}
+<main class="profesor-page">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} mb-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Información del profesor -->
+    <section class="info-profesor">
+        <h1>Gestión de Talleres</h1>
+        <p>Profesor: {{ request.user.username }}</p>
+    </section>
+
+    <!-- Creación simplificada de talleres -->
+    {% if puede_crear_taller %}
+    <section class="agenda">
+        <div id="taller-creation-launch" class="taller-creation-launch">
+            <button
+                type="button"
+                id="crear-taller-button"
+                class="button"
+                aria-expanded="false"
+                aria-controls="taller-creation-options taller-form-panel"
+            >
+                Crear taller
+            </button>
+        </div>
+
+        <div id="taller-creation-options" class="tipo-taller-panel" hidden>
+            <div class="section-heading">
+                <h3>Selecciona una opción</h3>
+                <p>Cada opción abrirá el formulario con sus datos correspondientes.</p>
+            </div>
+            <div class="tipo-taller-options">
+                {% for valor, etiqueta in tipo_taller_opciones %}
+                    <button
+                        type="button"
+                        class="tipo-taller-option"
+                        data-tipo="{{ valor }}"
+                        data-etiqueta="{{ etiqueta }}"
+                    >
+                        <strong>{{ etiqueta }}</strong>
+                        <span>Abrir formulario</span>
+                    </button>
+                {% endfor %}
+            </div>
+            {% if form.tipo_taller.errors %}
+                <div class="form-errors">{{ form.tipo_taller.errors }}</div>
+            {% endif %}
+            <button type="button" id="cancelar-taller-options" class="button button-secondary">
+                Cancelar
+            </button>
+        </div>
+
+        <div
+            id="taller-form-panel"
+            class="taller-form-panel"
+            data-open="{% if form_abierto %}true{% else %}false{% endif %}"
+            hidden
+        >
+            <div class="section-heading">
+                <h3>Nuevo taller</h3>
+                <p>Tipo: <strong id="taller-selected-option"></strong></p>
+            </div>
+            <form method="post" class="form-actividad" id="taller-form" novalidate>
+                {% csrf_token %}
+                {{ form.tipo_taller }}
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                {% for field in form.visible_fields %}
+                    <div class="form-field">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.help_text %}<div class="form-help">{{ field.help_text }}</div>{% endif %}
+                        {% if field.errors %}<div class="form-errors">{{ field.errors }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="form-actions">
+                    <button type="submit" class="button">Guardar taller</button>
+                    <button type="button" id="cancelar-taller-form" class="button button-secondary">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Lista de talleres -->
+    <section class="lista-actividades">
+        <div class="section-heading">
+            <h3></h3>
+        </div>
+
+        {% if talleres_opciones %}
+        <div class="talleres-precargados">
+            <div class="section-heading">
+                <h4>Talleres precargados</h4>
+                <p>El botón Cargar se habilita automáticamente durante el horario correspondiente.</p>
+            </div>
+            <div class="table-scroll" tabindex="0" aria-label="Talleres precargados">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Día</th>
+                        <th>Hora inicio</th>
+                        <th>Hora fin</th>
+                        <th>Nombre del taller</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for taller in talleres_opciones %}
+                    <tr>
+                        <td>{{ taller.fecha|date:"d-m-Y" }}</td>
+                        <td>{{ taller.dia_semana }}</td>
+                        <td>{{ taller.hora_inicio|time:"H:i" }}</td>
+                        <td>{{ taller.hora_fin|time:"H:i" }}</td>
+                        <td>{{ taller.nombre }}</td>
+                        <td>{{ taller.seccion }}</td>
+                        <td>
+                            {% if taller.activo %}
+                                <span class="status-pill status-active">Disponible</span>
+                            {% else %}
+                                <span class="status-pill status-inactive">Fuera de horario</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" class="cargar-taller-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="taller_precargado" value="{{ taller.nombre }}">
+                                <button type="submit" class="button button-small" {% if not taller.activo %}disabled{% endif %}>
+                                    Cargar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+        {% else %}
+            <p class="empty-state">No hay talleres precargados disponibles en la base de datos.</p>
+        {% endif %}
+
+        <div class="archive-actions">
+            <form method="post" action="{% url 'archivar_actividades_pasadas' %}"
+                  data-confirm-title="Archivar talleres"
+                  data-confirm-message="¿Desea archivar los talleres que ya terminaron? No se borrarán, solo dejarán de mostrarse en esta lista."
+                  data-confirm-accept="Archivar"
+                  data-confirm-danger="false">
+                {% csrf_token %}
+                <button type="submit" class="button">
+                    Archivar talleres finalizados{% if actividades_pasadas_count %} ({{ actividades_pasadas_count }}){% endif %}
+                </button>
+            </form>
+        </div>
+
+        <div class="table-scroll" tabindex="0" aria-label="Talleres programados">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Día</th>
+                    <th>Hora inicio</th>
+                    <th>Hora fin</th>
+                    <th>Tipo</th>
+                    <th>Nombre del taller</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for clase in clases %}
+                <tr>
+                    <td>{{ clase.fecha|date:"d-m-Y" }}</td>
+                    <td>{{ clase.get_dia_semana_display }}</td>
+                    <td>{{ clase.hora_inicio|time:"H:i" }}</td>
+                    <td>{{ clase.hora_fin|time:"H:i" }}</td>
+                    <td>{{ clase.get_tipo_taller_display }}</td>
+                    <td>{{ clase.asignatura }}</td>
+                    <td>{{ clase.seccion }}</td>
+                    <td>
+                        <form method="post" action="{% url 'eliminar_actividad' clase.id %}" class="delete-activity-form"
+                              data-confirm-title="Eliminar taller"
+                              data-confirm-message="¿Desea eliminar este taller? Esta acción no se puede deshacer."
+                              data-confirm-accept="Eliminar">
+                            {% csrf_token %}
+                            <button type="submit" class="button button-danger button-small">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8">No hay talleres programados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+
+    </section>
+
+</main>
+
+{% if puede_crear_taller %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const launch = document.getElementById("taller-creation-launch");
+    const trigger = document.getElementById("crear-taller-button");
+    const optionsPanel = document.getElementById("taller-creation-options");
+    const formPanel = document.getElementById("taller-form-panel");
+    const form = document.getElementById("taller-form");
+    const selectedOption = document.getElementById("taller-selected-option");
+    const cancelOptions = document.getElementById("cancelar-taller-options");
+    const cancelForm = document.getElementById("cancelar-taller-form");
+    const optionButtons = Array.from(document.querySelectorAll(".tipo-taller-option"));
+    const typeInput = document.getElementById("id_tipo_taller");
+
+    function showInitialState() {
+        form.reset();
+        typeInput.value = "";
+        selectedOption.textContent = "";
+        launch.hidden = false;
+        optionsPanel.hidden = true;
+        formPanel.hidden = true;
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
+    }
+
+    function showOptions() {
+        form.reset();
+        typeInput.value = "";
+        selectedOption.textContent = "";
+        launch.hidden = false;
+        optionsPanel.hidden = false;
+        formPanel.hidden = true;
+        trigger.setAttribute("aria-expanded", "true");
+        optionButtons[0]?.focus();
+    }
+
+    function showForm(optionButton) {
+        form.reset();
+        typeInput.value = optionButton.dataset.tipo;
+        selectedOption.textContent = optionButton.dataset.etiqueta;
+        launch.hidden = true;
+        optionsPanel.hidden = true;
+        formPanel.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+        form.querySelector("select, input:not([type='hidden']), textarea")?.focus();
+    }
+
+    trigger.addEventListener("click", showOptions);
+    cancelOptions.addEventListener("click", showInitialState);
+    cancelForm.addEventListener("click", showOptions);
+
+    optionButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            showForm(button);
+        });
+    });
+
+    if (formPanel.dataset.open === "true") {
+        const selected = optionButtons.find(function (button) {
+            return button.dataset.tipo === typeInput.value;
+        });
+        if (selected) {
+            selectedOption.textContent = selected.dataset.etiqueta;
+            launch.hidden = true;
+            optionsPanel.hidden = true;
+            formPanel.hidden = false;
+            trigger.setAttribute("aria-expanded", "true");
+        } else {
+            showOptions();
+        }
+    }
+});
+</script>
+{% endif %}
+
+{% endblock %}

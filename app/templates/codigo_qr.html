@@ -1,0 +1,116 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block title %}QR para registrar residuos{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/codigo_qr.css' %}?v=4">
+{% endblock %}
+
+{% block body %}
+<div class="qr-shell">
+    <header class="qr-hero">
+        <div class="qr-hero-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+                <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"></path>
+                <path d="M14 14h2v2h-2zM18 14h2v4h-2zM14 18h4v2h-4zM20 20h.01"></path>
+            </svg>
+        </div>
+        <div class="qr-hero-copy">
+            <span class="qr-hero-label">Acceso rápido y seguro</span>
+            <h1 class="page-title-banner qr-page-title">QR para registrar residuos</h1>
+            <p>Comparte o escanea este código para ingresar directamente al formulario de registro del taller.</p>
+        </div>
+    </header>
+
+    <section class="qr-steps" aria-labelledby="qr-steps-title">
+        <div class="qr-section-heading">
+            <span>Guía rápida</span>
+            <h2 id="qr-steps-title">Registra un residuo en tres pasos</h2>
+        </div>
+        <ol class="qr-step-list">
+            <li>
+                <span class="qr-step-number">1</span>
+                <div>
+                    <strong>Escanea</strong>
+                    <p>Abre la cámara del teléfono y apunta al código QR.</p>
+                </div>
+            </li>
+            <li>
+                <span class="qr-step-number">2</span>
+                <div>
+                    <strong>Ingresa</strong>
+                    <p>Inicia sesión si el sistema solicita tus credenciales.</p>
+                </div>
+            </li>
+            <li>
+                <span class="qr-step-number">3</span>
+                <div>
+                    <strong>Registra</strong>
+                    <p>Completa los datos del residuo y confirma el registro.</p>
+                </div>
+            </li>
+        </ol>
+    </section>
+
+    <section class="qr-card" aria-label="Código QR y opciones de acceso">
+        <div class="qr-copy">
+            <div class="qr-section-heading">
+                <span>Enlace directo</span>
+                <h2>También puedes abrir o compartir el formulario</h2>
+            </div>
+
+            <p class="qr-description">
+                El enlace conduce al mismo formulario del código QR. Si no existe una sesión activa,
+                el sistema solicitará iniciar sesión antes de continuar.
+            </p>
+
+            <div class="link-box">
+                <span class="link-label">Dirección del formulario</span>
+                <div class="link-value-row">
+                    <span id="registro-url">{{ registro_url }}</span>
+                    <button type="button" data-copy-target="registro-url">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <rect x="8" y="8" width="11" height="11" rx="2"></rect>
+                            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+                        </svg>
+                        <span>Copiar enlace</span>
+                    </button>
+                </div>
+            </div>
+
+            <p class="copy-status" role="status" aria-live="polite" data-copy-status></p>
+
+            <div class="qr-security-note">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M12 3 5 6v5c0 4.8 2.9 8.1 7 10 4.1-1.9 7-5.2 7-10V6l-7-3Z"></path>
+                    <path d="m9 12 2 2 4-4"></path>
+                </svg>
+                <div>
+                    <strong>{% if conexion_segura %}Conexión segura disponible{% else %}Acceso protegido por autenticación{% endif %}</strong>
+                    <p>El código no contiene contraseñas ni información personal; únicamente dirige al formulario.</p>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="{{ registro_url }}" class="qr-btn">
+                    Abrir formulario
+                    <span aria-hidden="true">→</span>
+                </a>
+                <a href="{% url 'dashboard' %}" class="qr-btn secondary">Volver al Panel de Sostenibilidad</a>
+            </div>
+        </div>
+
+        <div class="qr-box">
+            <span class="qr-box-label">Listo para escanear</span>
+            <div class="qr-image-frame">
+                <img src="{% url 'generar_codigo' %}?ruta={{ registro_path|urlencode }}" alt="Código QR que abre el formulario de registro de residuos">
+            </div>
+            <h2>Escanea con tu teléfono</h2>
+            <p>Ubica el código dentro del cuadro de la cámara y selecciona el enlace que aparecerá.</p>
+        </div>
+    </section>
+</div>
+
+<script src="{% static 'js/codigo_qr.js' %}?v=1"></script>
+{% endblock %}

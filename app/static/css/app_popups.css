@@ -1,0 +1,142 @@
+.app-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(71, 85, 105, 0.68);
+    backdrop-filter: blur(3px);
+}
+
+.app-popup-overlay[hidden] {
+    display: none;
+}
+
+.app-popup-dialog {
+    width: min(100%, 440px);
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.35);
+    animation: app-popup-enter 180ms ease-out;
+}
+
+.app-popup-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.2rem;
+    color: #ffffff;
+    background: #0f766e;
+}
+
+.app-popup-dialog[data-type="error"] .app-popup-header {
+    background: #b91c1c;
+}
+
+.app-popup-dialog[data-type="warning"] .app-popup-header,
+.app-popup-dialog[data-type="confirm"] .app-popup-header {
+    background: #b45309;
+}
+
+.app-popup-dialog[data-type="info"] .app-popup-header {
+    background: #0369a1;
+}
+
+.app-popup-icon {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.app-popup-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 750;
+}
+
+.app-popup-body {
+    padding: 1.25rem;
+    color: #334155;
+    font-size: 0.96rem;
+    line-height: 1.55;
+    white-space: pre-line;
+}
+
+.app-popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.7rem;
+    padding: 0 1.25rem 1.25rem;
+}
+
+.app-popup-button {
+    min-width: 92px;
+    border: 0;
+    border-radius: 9px;
+    padding: 0.62rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.app-popup-button-primary {
+    color: #ffffff;
+    background: #0f766e;
+}
+
+.app-popup-button-danger {
+    color: #ffffff;
+    background: #b91c1c;
+}
+
+.app-popup-button-secondary {
+    color: #334155;
+    background: #e2e8f0;
+}
+
+.app-popup-progress {
+    height: 4px;
+    background: #e2e8f0;
+}
+
+.app-popup-progress-bar {
+    width: 100%;
+    height: 100%;
+    background: #14b8a6;
+    transform-origin: left;
+    animation: app-popup-countdown 10s linear forwards;
+}
+
+.app-popup-dialog[data-type="error"] .app-popup-progress-bar {
+    background: #ef4444;
+}
+
+.app-popup-dialog[data-type="warning"] .app-popup-progress-bar,
+.app-popup-dialog[data-type="confirm"] .app-popup-progress-bar {
+    background: #f59e0b;
+}
+
+@keyframes app-popup-enter {
+    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes app-popup-countdown {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .app-popup-dialog {
+        animation: none;
+    }
+}

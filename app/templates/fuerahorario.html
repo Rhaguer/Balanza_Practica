@@ -1,0 +1,30 @@
+{% extends "./base.html" %}
+
+{% block title %}Fuera de horario{% endblock %}
+
+{% block body %}
+<div class="bg-light py-5">
+  <div class="container">
+    <div class="card shadow mx-auto" style="max-width: 560px;">
+      <div class="card-body text-center p-4">
+        <h2 class="page-title-banner mb-3">Fuera de horario</h2>
+        <p class="mb-4">
+          No hay un taller programado y activo en este momento. Para registrar residuos,
+          primero debe existir un taller creado para la fecha y hora actual.
+        </p>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          {% if es_admin or es_profesor %}
+            <a href="{% url 'profesor' %}" class="btn btn-primary">
+              Crear taller
+            </a>
+          {% endif %}
+          <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+            Volver al Panel de Sostenibilidad
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

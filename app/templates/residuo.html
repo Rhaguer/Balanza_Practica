@@ -1,0 +1,406 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block body %}
+
+<style>
+.hidden { display: none !important; }
+</style>
+
+<div class="bg-light py-4">
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header bg-success text-white text-center">
+                <h3 class="mb-0">Registro de Residuo</h3>
+            </div>
+
+            <div class="card-body">
+                <form>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="tipo">Tipo de residuo</label>
+                        <select id="tipo" name="tipo" class="form-select" required>
+                            {% for categoria in categorias_residuo %}
+                                <option value="{{ categoria.id_categoria }}"
+                                        data-tipo-operacional="{{ categoria.tipo_operacional }}"
+                                        {% if categoria.tipo_operacional == "organico" %}selected{% endif %}>
+                                    {% if categoria.tipo_operacional == "organico" %}Orgánicos{% else %}Inorgánicos{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">Seleccione Orgánicos o Inorgánicos.</small>
+                    </div>
+
+                    <div class="mb-3 hidden" id="unidades-div">
+                        <label class="form-label" for="unidadInput">Cantidad de unidades</label>
+                        <input id="unidadInput" name="unidad" type="number" class="form-control"
+                               min="1" max="1000" step="1" inputmode="numeric"
+                               placeholder="Ingrese una cantidad entre 1 y 1000">
+                        <small class="text-muted">Los residuos inorgánicos se registran en unidades enteras.</small>
+                    </div>
+
+                    <div class="mb-3" id="peso-div">
+                        <div class="border rounded p-3 bg-light">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                <div>
+                                    <p id="estado" class="fw-semibold mb-0">Balanza esperando lectura automática</p>
+                                    <p id="msgPermiso" class="text-muted small mb-0">El peso orgánico lo completa la balanza.</p>
+                                </div>
+                                <span id="stableBadge" class="badge text-bg-secondary">Sin lectura</span>
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button id="btnConnect" type="button" class="btn btn-secondary">
+                                    Buscar balanza automáticamente / Reintentar
+                                </button>
+                                <button id="btnLimpiarPeso" type="button" class="btn btn-outline-secondary">
+                                    Limpiar
+                                </button>
+                            </div>
+
+                            <label class="form-label">Peso validado desde balanza (kg)</label>
+                            <input id="weightInput" class="form-control" placeholder="Esperando lectura estable..." readonly />
+                            <div class="progress mt-2" style="height: 6px;">
+                                <div id="stableProgress" class="progress-bar bg-secondary" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <small id="lecturaHint" class="text-muted d-block mt-2">Se requieren 3 lecturas similares para aceptar el peso.</small>
+                        </div>
+                    </div>
+
+                    <div id="registroMensaje" class="alert alert-success hidden" role="status"></div>
+
+                    <button type="button" class="btn btn-primary w-100" id="btnGuardar" disabled>
+                        Guardar residuo
+                    </button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ pendiente_reanudado|json_script:"pendiente_reanudado_json" }}
+
+<script>
+const tipoSelect = document.getElementById("tipo");
+const pesoDiv = document.getElementById("peso-div");
+const balanzaLeerUrl = "{% url 'balanza_leer' %}";
+const lastWeightUrl = "{% url 'last_weight' %}";
+const guardarPendienteUrl = "{% url 'guardar' %}";
+let ultimoPesoBalanza = null;
+let pesoEstable = false;
+let deteccionBalanzaEnCurso = false;
+let reintentoBalanzaTimer = null;
+const pendienteReanudadoElemento = document.getElementById("pendiente_reanudado_json");
+const pendienteReanudado = pendienteReanudadoElemento
+    ? JSON.parse(pendienteReanudadoElemento.textContent || "null")
+    : null;
+
+window.onload = () => {
+    resetPeso();
+    actualizarTipoResiduo();
+    actualizarEstadoFormulario();
+};
+
+window.addEventListener("load", function () {
+    if (!pendienteReanudado?.residuo_id) return;
+
+    if (pendienteReanudado.tipo_id) {
+        tipoSelect.value = String(pendienteReanudado.tipo_id);
+        actualizarTipoResiduo();
+    }
+    localStorage.setItem("residuo_id", String(pendienteReanudado.residuo_id));
+    localStorage.setItem("registro_contexto", JSON.stringify(pendienteReanudado.registro_contexto || {}));
+
+    actualizarEstadoFormulario();
+
+    const mensaje = document.getElementById("registroMensaje");
+    mensaje.textContent = `Continuando el registro pendiente #${pendienteReanudado.residuo_id}. Complete los datos y presione Guardar residuo.`;
+    mensaje.classList.remove("hidden");
+});
+
+document.getElementById("btnLimpiarPeso").addEventListener("click", resetPeso);
+document.getElementById('btnConnect').addEventListener('click', detectarBalanzaAutomatica);
+tipoSelect.addEventListener("change", actualizarTipoResiduo);
+document.getElementById("unidadInput").addEventListener("input", actualizarEstadoFormulario);
+
+  function tipoOperacionalSeleccionado() {
+    return tipoSelect.selectedOptions[0]?.dataset.tipoOperacional || "";
+  }
+
+  function actualizarTipoResiduo() {
+    const esInorganico = tipoOperacionalSeleccionado() === "inorganico";
+    pesoDiv.classList.toggle("hidden", esInorganico);
+    document.getElementById("unidades-div").classList.toggle("hidden", !esInorganico);
+
+    if (esInorganico) {
+      if (reintentoBalanzaTimer) {
+        clearTimeout(reintentoBalanzaTimer);
+        reintentoBalanzaTimer = null;
+      }
+      document.getElementById("unidadInput").focus();
+    } else {
+      detectarBalanzaAutomatica();
+    }
+    actualizarEstadoFormulario();
+  }
+
+  function marcarPesoEstable(peso, origen) {
+    const numero = Number(peso);
+    if (!Number.isFinite(numero) || numero <= 0) return;
+    ultimoPesoBalanza = numero.toFixed(3);
+    pesoEstable = true;
+    if (reintentoBalanzaTimer) {
+      clearTimeout(reintentoBalanzaTimer);
+      reintentoBalanzaTimer = null;
+    }
+    document.getElementById('weightInput').value = ultimoPesoBalanza;
+    document.getElementById('estado').textContent = 'Última lectura estable cargada';
+    document.getElementById('lecturaHint').textContent = `Lectura estable registrada por ${origen}.`;
+    actualizarBadgeEstabilidad();
+    actualizarEstadoFormulario();
+  }
+
+  function marcarPesoInvalido(mensaje) {
+    ultimoPesoBalanza = null;
+    pesoEstable = false;
+    document.getElementById('weightInput').value = '';
+    document.getElementById('estado').textContent = mensaje;
+    document.getElementById('lecturaHint').textContent = 'Se descartó la lectura anterior; espere un nuevo peso estable.';
+    actualizarBadgeEstabilidad();
+    actualizarEstadoFormulario();
+  }
+
+  function resetPeso() {
+    ultimoPesoBalanza = null;
+    pesoEstable = false;
+    document.getElementById('weightInput').value = '';
+    document.getElementById('estado').textContent = 'Balanza esperando lectura automática';
+    document.getElementById('lecturaHint').textContent = 'La aplicación buscará automáticamente en Serial, HID y USB.';
+    actualizarBadgeEstabilidad();
+    actualizarEstadoFormulario();
+  }
+
+  function actualizarBadgeEstabilidad() {
+    const badge = document.getElementById('stableBadge');
+    const progress = document.getElementById('stableProgress');
+
+    badge.className = 'badge ' + (pesoEstable ? 'text-bg-success' : deteccionBalanzaEnCurso ? 'text-bg-warning' : 'text-bg-secondary');
+    badge.textContent = pesoEstable ? 'Peso estable' : deteccionBalanzaEnCurso ? 'Buscando' : 'Sin lectura';
+    progress.style.width = (pesoEstable ? 100 : deteccionBalanzaEnCurso ? 50 : 0) + '%';
+    progress.className = 'progress-bar ' + (pesoEstable ? 'bg-success' : deteccionBalanzaEnCurso ? 'bg-warning' : 'bg-secondary');
+  }
+
+  function requierePeso() {
+    return tipoOperacionalSeleccionado() === "organico";
+  }
+
+  function actualizarEstadoFormulario() {
+    const tipoOk = Boolean(tipoSelect.value);
+    const unidades = Number(document.getElementById("unidadInput").value);
+    const medicionOk = requierePeso()
+      ? pesoEstable && Boolean(ultimoPesoBalanza)
+      : Number.isInteger(unidades) && unidades >= 1 && unidades <= 1000;
+    document.getElementById("btnGuardar").disabled = !(tipoOk && medicionOk);
+  }
+
+  function programarNuevaDeteccionBalanza() {
+    if (pesoEstable || pesoDiv.classList.contains("hidden") || reintentoBalanzaTimer) return;
+    reintentoBalanzaTimer = setTimeout(function () {
+      reintentoBalanzaTimer = null;
+      detectarBalanzaAutomatica();
+    }, 3000);
+  }
+
+  async function detectarBalanzaAutomatica() {
+    if (deteccionBalanzaEnCurso || pesoDiv.classList.contains("hidden")) return;
+
+    deteccionBalanzaEnCurso = true;
+    document.getElementById('estado').textContent = 'Buscando balanza automáticamente...';
+    document.getElementById('msgPermiso').textContent = 'Revisando todos los puertos Serial y los dispositivos HID/USB disponibles.';
+    actualizarBadgeEstabilidad();
+
+    try {
+      const resp = await fetch(balanzaLeerUrl);
+      const data = await resp.json();
+      if (resp.ok && data.ok && data.peso !== null && data.peso !== undefined) {
+        marcarPesoEstable(data.peso, data.dispositivo || data.puerto || data.fuente || 'balanza');
+        document.getElementById('msgPermiso').textContent = data.mensaje || 'Balanza detectada automáticamente.';
+      } else {
+        marcarPesoInvalido(data.mensaje || 'No se detectó una lectura estable.');
+        document.getElementById('msgPermiso').textContent = data.accion || 'Revise el cable, controlador y alimentación de la balanza.';
+      }
+    } catch (e) {
+      marcarPesoInvalido('No se pudo consultar la balanza.');
+      document.getElementById('msgPermiso').textContent = 'Revise que el servidor local esté activo y vuelva a intentar.';
+    } finally {
+      deteccionBalanzaEnCurso = false;
+      actualizarBadgeEstabilidad();
+      programarNuevaDeteccionBalanza();
+    }
+  }
+
+  async function cargarPesoAutomatico() {
+    if (pesoDiv.classList.contains("hidden")) return;
+
+    try {
+      const resp = await fetch(lastWeightUrl);
+      if (!resp.ok) return;
+
+      const data = await resp.json();
+      if (data.weight_kg === null || data.weight_kg === undefined) {
+        if (ultimoPesoBalanza !== null) {
+          marcarPesoInvalido('Esperando una lectura reciente de la balanza.');
+        }
+        return;
+      }
+      if (data.created_at) {
+        const edadMs = Date.now() - Date.parse(data.created_at);
+        if (Number.isFinite(edadMs) && edadMs > 2 * 60 * 1000) {
+          marcarPesoInvalido('La última lectura de la balanza ya caducó.');
+          return;
+        }
+      }
+
+      const peso = String(data.weight_kg);
+      if (peso && peso !== ultimoPesoBalanza) {
+        marcarPesoEstable(peso, data.device_name || 'api');
+      }
+    } catch (e) {
+      console.warn("No se pudo leer el ultimo peso registrado", e);
+    }
+  }
+
+  setInterval(cargarPesoAutomatico, 1500);
+  cargarPesoAutomatico();
+
+  async function obtenerResiduoId() {
+    const existente = localStorage.getItem("residuo_id");
+    if (existente) return existente;
+
+    let contexto = null;
+    try {
+      contexto = JSON.parse(localStorage.getItem("registro_contexto") || "null");
+    } catch (error) {
+      contexto = null;
+    }
+    if (!contexto?.taller_id) {
+      throw new Error("No se encontró el taller activo. Vuelva a confirmar el taller una sola vez.");
+    }
+
+    const formData = new FormData();
+    formData.append("taller_id", contexto.taller_id);
+    const response = await fetch(guardarPendienteUrl, {
+      method: "POST",
+      headers: { "X-CSRFToken": getCookie("csrftoken") },
+      body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      throw new Error(data.error || "No se pudo iniciar el siguiente registro.");
+    }
+    localStorage.setItem("residuo_id", data.id);
+    if (data.registro_contexto) {
+      localStorage.setItem("registro_contexto", JSON.stringify(data.registro_contexto));
+    }
+    return String(data.id);
+  }
+
+  function prepararSiguienteRegistro(contenedor) {
+    const mensaje = document.getElementById("registroMensaje");
+    mensaje.textContent = `Residuo guardado en ${contenedor}. Puede ingresar el siguiente registro aquí mismo.`;
+    mensaje.classList.remove("hidden");
+    resetPeso();
+    document.getElementById("unidadInput").value = "";
+    actualizarEstadoFormulario();
+    if (requierePeso()) {
+      document.getElementById("btnConnect").focus();
+      detectarBalanzaAutomatica();
+    } else {
+      document.getElementById("unidadInput").focus();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* =============================
+   BOTÓN GUARDAR
+============================= */
+document.getElementById("btnGuardar").addEventListener("click", async () => {
+    const tipo = tipoSelect.value;
+    const peso = document.getElementById("weightInput").value || null;
+    const unidad = document.getElementById("unidadInput").value || null;
+
+    if (!tipo) {
+        alert("Seleccione Orgánicos o Inorgánicos.");
+        return;
+    }
+
+    if (requierePeso() && !pesoEstable) {
+        alert("Espere una lectura estable de la balanza antes de guardar.");
+        return;
+    }
+    if (!requierePeso() && (!Number.isInteger(Number(unidad)) || Number(unidad) < 1)) {
+        alert("Ingrese una cantidad entera mayor a 0 para residuos inorgánicos.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("tipo", tipo);
+    if (requierePeso()) {
+        formData.append("peso", peso);
+    } else {
+        formData.append("unidad", unidad);
+    }
+
+    try {
+        const boton = document.getElementById("btnGuardar");
+        boton.disabled = true;
+        boton.textContent = "Guardando...";
+        const residuoId = await obtenerResiduoId();
+        formData.append("residuo_id", residuoId);
+        const resp = await fetch("{% url 'actualizar_residuo' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": getCookie("csrftoken") },
+            body: formData
+        });
+
+        const data = await resp.json();
+
+        if (data.success) {
+            localStorage.removeItem("residuo_id");
+            if (data.registro_contexto) {
+                localStorage.setItem("registro_contexto", JSON.stringify(data.registro_contexto));
+            }
+            prepararSiguienteRegistro(data.contenedor_asignado);
+        } else {
+            alert(data.error || "Error al guardar.");
+        }
+    } catch (error) {
+        alert(error.message || "Error en la conexión.");
+        console.error(error);
+    } finally {
+        const boton = document.getElementById("btnGuardar");
+        boton.textContent = "Guardar residuo";
+        actualizarEstadoFormulario();
+    }
+});
+
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie) {
+        document.cookie.split(";").forEach(cookie => {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            }
+        });
+    }
+    return cookieValue;
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

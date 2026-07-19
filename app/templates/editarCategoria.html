@@ -1,0 +1,39 @@
+{% extends "./base.html" %}
+
+{% block title %} Gestión de Usuarios {% endblock %}
+{% load static %}
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/usuarios.css' %}">
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4 ">
+            <h3 class="page-title-banner">Editar Categoria</h3>
+            <div class="card mt-4 mb-4 shadow">
+                <div class="card-body">
+                    <form method="post" class="p-4 border rounded bg-dark " id="form-categoria">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_nombre" class="text-white">Nombre</label>
+                        {{ form.nombre }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_tipo_operacional" class="text-white">Tipo de residuo</label>
+                        {{ form.tipo_operacional }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_descripcion" class="text-white">Descripción</label>
+                        {{ form.descripcion }}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Guardar Categoría</button>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}
